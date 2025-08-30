@@ -1,5 +1,6 @@
 
-Coastal Threat Alert System
+#Coastal Threat Alert System
+
 Overview
 This project is a simple yet effective alert system designed to monitor and notify coastal communities about potential threats such as tsunamis, storm surges, and high tides. It aims to provide timely and accurate information to help ensure the safety of residents in vulnerable coastal areas.
 

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import NavBar from '../components/Navbar'
 import {Routes, Route} from 'react-router-dom'
-import HomePage from '../pages/homePage'
+import HomePage from '../pages/HomePage'
 import Alerts from '../pages/Alerts'
-import Emergency from '../pagesEmergency'
+import Emergency from '../pages/Emergency'
 import Awareness from '../pages/Awareness'
 
 export default function App() {
@@ -14,8 +14,8 @@ export default function App() {
     <Routes>
       <Route path= '/' element={<HomePage />} />
       <Route path='/alerts' element ={<Alerts />} />
-      <Route path= '/activity' element={<Emergency />} />
-      <Route path = '/account' element={<Awareness />} />
+      <Route path= '/emergency' element={<Emergency />} />
+      <Route path = '/awareness' element={<Awareness />} />
     </Routes>
     </>
   )

@@ -15,10 +15,10 @@ export default function NavBar() {
             <Link to="/alerts" className="nav-link">Alerts</Link>
           </li> <br />
           <li className="nav-item">
-            <Link to="/account" className="nav-link">Awareness</Link>
+            <Link to="/awareness" className="nav-link">Awareness</Link>
           </li> <br />
           <li className="nav-item">
-            <Link to="/account" className="nav-link">Emergency Details</Link>
+            <Link to="/emergency" className="nav-link">Emergency Details</Link>
           </li> 
         </ul>
       </div>

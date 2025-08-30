@@ -1,9 +1,8 @@
 import React from 'react'
 
-function Emergency() {
+export default function Emergency() {
   return (
     <div>Emergency</div>
   )
 }
 
-export default Emergency

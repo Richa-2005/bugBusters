@@ -8,9 +8,7 @@ const SignUp = () => {
     Lname: '',
     email: '',
     phoneNumber: '',
-    city: '',
-    password: '',
-    confirmPassword: '',
+    city: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -28,15 +26,7 @@ const SignUp = () => {
     setError('');
     setSuccess('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long.');
-      return;
-    }
-    const { confirmPassword, ...userData } = formData;
+    const {  ...userData } = formData;
 
     try {
       
@@ -46,7 +36,7 @@ const SignUp = () => {
       setSuccess('Registration successful! You can now sign in.');
     
       setFormData({
-        Fname: '', Lname: '', email: '', phoneNumber: '', city: '', password: '', confirmPassword: '',
+        Fname: '', Lname: '', email: '', phoneNumber: '', city: ''
       });
      
 
@@ -95,15 +85,6 @@ const SignUp = () => {
           <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} required />
         </div>
         
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required />
-        </div>
 
         <button type="submit" className="submit-btn">
           Create Account

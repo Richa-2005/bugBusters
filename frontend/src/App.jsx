@@ -9,15 +9,19 @@ import Awareness from '../pages/Awareness'
 import SignUp from '../components/Sign-Up'
 
 
+
+
 export default function App() {
   const [isSigned,setSigned] =useState(false)
-
+  
   return (
     <>
+    {!isSigned && <>
     <Routes>
       <Route path='/signup' element={<SignUp />} />
-    </Routes>
+    </Routes> 
     <SignIn isSigned={isSigned} setSigned={setSigned}/>
+  </>}
     {isSigned && <>
     <NavBar />
     <Routes>

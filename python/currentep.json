@@ -1,0 +1,30 @@
+{
+    "lat": 33.44,
+    "lon": -94.04,
+    "timezone": "America/Chicago",
+    "timezone_offset": -18000,
+    "current": {
+        "dt": 1756530181,
+        "sunrise": 1756554557,
+        "sunset": 1756601074,
+        "temp": 21.91,
+        "feels_like": 22.53,
+        "pressure": 1015,
+        "humidity": 91,
+        "dew_point": 20.37,
+        "uvi": 0,
+        "clouds": 66,
+        "visibility": 10000,
+        "wind_speed": 2.6,
+        "wind_deg": 64,
+        "wind_gust": 3.6,
+        "weather": [
+            {
+                "id": 803,
+                "main": "Clouds",
+                "description": "broken clouds",
+                "icon": "04n"
+            }
+        ]
+    }
+}

@@ -13,9 +13,7 @@ const Awareness = () => {
         <div className="info-card">
           <h2>Understanding Alerts</h2>
           <p>
-            Coastal alerts can range from advisories to warnings. Know the difference:
-            <strong>Advisory</strong> (potential hazard), <strong>Watch</strong> (conditions favorable for hazard),
-            <strong>Warning</strong> (hazard imminent or occurring). Always follow local authorities.
+            Coastal alerts can range from advisories to warnings. Know the difference: Advisory, Watch, Warning (hazard occurring). Always follow local authorities.
           </p>
           <img src="https://www.shutterstock.com/image-vector/tsunami-hazard-zone-warning-sign-600nw-2517327097.jpg" alt="Coastal Alert Warning Sign" className="card-image" />
         </div>
@@ -28,7 +26,7 @@ const Awareness = () => {
           </p>
           <img src="https://images-na.ssl-images-amazon.com/images/I/81k6JStLeqL._AC_UL495_SR435,495_.jpg" alt="Emergency kit contents" className="card-image" />
         </div>
-<br />
+
         <div className="info-card">
           <h2>Secure Your Home</h2>
           <p>
@@ -42,7 +40,7 @@ const Awareness = () => {
           <h2>Evacuation Routes</h2>
           <p>
             Familiarize yourself with local evacuation routes. Always follow official evacuation orders
-            and head to designated safe zones or shelters. Don't wait until it's too late.
+            and head to designated safe zones. Don't wait until it's too late.
           </p>
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFAbM26KtR6lfMl8PMlmtTXO6fbIzU9e1XKgMOxk5GEOEATIWeCKJu_jsbSkkjE6RIfoQ&usqp=CAU" alt="Coastal evacuation routes" className="card-image" />
         </div>

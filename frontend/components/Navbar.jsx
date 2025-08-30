@@ -9,16 +9,16 @@ export default function NavBar() {
         <ul className="nav-links">
         <li className="logo"></li> 
           <li className="nav-item">
-            <Link to="/" className="nav-link">Home</Link> 
+            <Link to="/" className="nav-link"><b>Home</b></Link> 
           </li> 
           <li className="nav-item">
-            <Link to="/alerts" className="nav-link">Alerts</Link>
+            <Link to="/alerts" className="nav-link"><b>Alerts</b></Link>
           </li> 
           <li className="nav-item">
-            <Link to="/awareness" className="nav-link">Awareness</Link>
-          </li> <br />
+            <Link to="/awareness" className="nav-link"><b>Awareness</b></Link>
+          </li> 
           <li className="nav-item">
-            <Link to="/emergency" className="nav-link">Emergency Details</Link>
+            <Link to="/emergency" className="nav-link"><b>Emergency Details</b></Link>
           </li> 
         </ul>
       </div>

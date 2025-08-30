@@ -1,0 +1,23 @@
+{
+    "location": {
+        "latitude": 23.0225,
+        "longitude": 72.5714,
+        "timezone": "Asia/Kolkata"
+    },
+    "assistant_report": {
+        "generated_at_utc": "2025-08-30T09:54:10Z",
+        "friendly_summary": "Expect a day of partly cloudy with rain",
+        "advice": [
+            "The UV index is moderate (2.84). It's still a good idea to protect your skin.",
+            "There's a high chance of rain today (100%). Don't forget your umbrella!",
+            "Rain is expected. Wear waterproof clothing if you plan to be outside."
+        ],
+        "key_metrics": {
+            "current_temp_celsius": 30.66,
+            "current_condition": "Overcast Clouds",
+            "chance_of_rain_percent": 100,
+            "max_temp_celsius": 31.84,
+            "min_temp_celsius": 26.91
+        }
+    }
+}

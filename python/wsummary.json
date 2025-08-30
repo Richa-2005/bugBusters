@@ -1,0 +1,21 @@
+{
+    "location": {
+        "latitude": 23.0225,
+        "longitude": 72.5714
+    },
+    "today": {
+        "date": "Saturday, 30 August 2025",
+        "summary": "Expect a day of partly cloudy with rain",
+        "current_temp_celsius": 32.62,
+        "feels_like_celsius": 38.9,
+        "condition": "Overcast Clouds"
+    },
+    "tomorrow": {
+        "date": "Sunday, 31 August 2025",
+        "summary": "There will be rain today",
+        "day_temp_celsius": 24.73,
+        "night_temp_celsius": 25.37,
+        "condition": "Heavy Intensity Rain",
+        "chance_of_rain_percent": 100
+    }
+}

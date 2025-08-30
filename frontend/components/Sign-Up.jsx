@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './signup.css'; // Import the corresponding CSS file
+import './signup.css'; // Make sure you have this CSS file
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -27,14 +27,22 @@ const SignUp = () => {
     setSuccess('');
 
     const {  ...userData } = formData;
-
+  
     try {
       
       const response = await axios.post('http://localhost:5500/user/post', userData);
       
-      console.log('User registered successfully:', response.data);
+      console.log('User registered successfully with Node.js backend:', response.data);
       setSuccess('Registration successful! You can now sign in.');
-    
+  
+      try {
+        const flaskApiUrl = 'http://127.0.0.1:5000/get-coordinates';
+        const flaskResponse = await axios.post(flaskApiUrl, userData);
+        console.log('Data successfully sent to Flask backend:', flaskResponse.data);
+      } catch (flaskError) {
+        console.error('Could not send data to Flask backend:', flaskError);
+      }
+
       setFormData({
         Fname: '', Lname: '', email: '', phoneNumber: '', city: ''
       });
@@ -85,7 +93,6 @@ const SignUp = () => {
           <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} required />
         </div>
         
-
         <button type="submit" className="submit-btn">
           Create Account
         </button>

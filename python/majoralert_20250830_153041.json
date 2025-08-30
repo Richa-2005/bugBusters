@@ -1,0 +1,15 @@
+{
+    "timestamp_utc": "2025-08-30T10:00:39.153600",
+    "monitoring_location": {
+        "latitude": 19.8135,
+        "longitude": 85.8312
+    },
+    "status": "CLEAR",
+    "details": {
+        "current_weather": {
+            "wind_speed_ms": 6.22,
+            "pressure_hpa": 1004
+        },
+        "message": "No immediate cyclone indicators found in current conditions."
+    }
+}

@@ -3,6 +3,7 @@ import json
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from app import get_coordinates
 
 def save_weather_overview_as_json(lat, lon, api_key, filename="wsummary.json"):
     """
@@ -73,8 +74,6 @@ if __name__ == "__main__":
     if not api_key:
         print("Error: OPEN_WEATHER_API_KEY not found in .env file.")
     else:
-        # Using Ahmedabad's coordinates as an example
-        lat = 23.0225
-        lon = 72.5714
+        lat, lon = get_coordinates()
         result_message = save_weather_overview_as_json(lat, lon, api_key)
         print(result_message)

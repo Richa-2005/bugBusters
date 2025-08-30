@@ -3,10 +3,10 @@ import json
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from app import get_coordinates
 
 load_dotenv()
-lat = 33.44
-lon = -94.04
+lat, lon = get_coordinates()
 api_key = os.getenv("OPEN_WEATHER_API_KEY")
 exclude_parts = "minutely,hourly,daily,alerts"
 

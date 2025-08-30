@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import NavBar from '../components/Navbar'
+import NavBar from '../components/Navbar.jsx'
 import {Routes, Route} from 'react-router-dom'
 import HomePage from '../pages/HomePage'
 import Alerts from '../pages/Alerts'

@@ -96,4 +96,4 @@ def monitor_severe_weather(lat, lon, api_key):
 
 # --- Run the main function ---
 if __name__ == "__main__":
-    monitor_severe_weather(LAT, LON, API_KEY)
+    monitor_severe_weather(lat, lon, API_KEY)

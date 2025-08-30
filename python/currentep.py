@@ -19,12 +19,12 @@ try:
     with open(output_filename, 'w') as json_file:
         json.dump(data, json_file, indent=4)
     
-    # This confirmation message is optional, but helpful
-    print(f"✅ Data saved to {output_filename}")
+    # confirmation message 
+    print(f"Data saved to {output_filename}")
     print("=" * 30) # Separator for clarity
 
 
-    # --- YOUR EXISTING PRINT BLOCK (UNCHANGED) ---
+    # PRINT BLOCK 
     print("--- Detailed Current Weather ---")
     current_data = data.get('current', {})
     ''' print(json.dumps(data, indent=2))
@@ -67,7 +67,7 @@ try:
         print(f"Wind Gust: {current_data.get('wind_gust')} m/s")
         print("-" * 20)
 
-        # Precipitation (safely access, as it only appears when it's raining/snowing)
+        # Precipitation (only appears when it's raining/snowing)
     if 'rain' in current_data and '1h' in current_data['rain']:
         print(f"Rain (last hour): {current_data['rain']['1h']} mm/h")
     if 'snow' in current_data and '1h' in current_data['snow']:

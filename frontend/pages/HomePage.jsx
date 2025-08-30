@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import './homePage.css' 
 
-
 const SunIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -152,21 +151,20 @@ const CompassIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-  >
+  >userCity
     <circle cx="12" cy="12" r="10"></circle>
     <polygon points="16.24 7.76 -7.76 16.24 12 12 7.76 16.24 16.24 7.76"></polygon>
   </svg>
 )
 
-// --- Main HomePage Component ---
-const HomePage = ({ userCity = 'Ahmedabad' }) => {
-  // State to hold all weather data.
+const HomePage = () => {
+  
   const [weatherData, setWeatherData] = useState({
     temperature: 29,
     feelsLike: 32,
     humidity: 78,
     windSpeed: 15,
-    visibility: '10km',
+    visibility: 10,
     pressure: 1012,
     sunrise: '6:15 AM',
     sunset: '7:05 PM',
@@ -183,7 +181,7 @@ const HomePage = ({ userCity = 'Ahmedabad' }) => {
       value: `${weatherData.humidity}%`,
       icon: <DropletIcon />,
     },
-    { title: 'Visibility', value: weatherData.visibility, icon: <EyeIcon /> },
+    { title: 'Visibility', value: `${weatherData.visibility}km`, icon: <EyeIcon /> },
     {
       title: 'Feels Like',
       value: `${weatherData.feelsLike}°C`,
@@ -210,9 +208,9 @@ const HomePage = ({ userCity = 'Ahmedabad' }) => {
   return (
     <div className="weather-app-container">
       <main className="weather-card">
-        {/* --- Top Section: City and Temperature --- */}
+        
         <div className="main-info">
-          <h1 className="city-name">{userCity}</h1>
+          <h1 className="city-name">{'Ahmedabad'}</h1>
           <p className="temperature">
             {weatherData.temperature}°<span className="degree-symbol">C</span>
           </p>

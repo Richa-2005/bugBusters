@@ -9,8 +9,6 @@ import Awareness from '../pages/Awareness'
 import SignUp from '../components/Sign-Up'
 
 
-
-
 export default function App() {
   const [isSigned,setSigned] =useState(false)
   
@@ -23,6 +21,7 @@ export default function App() {
     <SignIn isSigned={isSigned} setSigned={setSigned}/>
   </>}
     {isSigned && <>
+
     <NavBar />
     <Routes>
       <Route path= '/' element={<HomePage />} />

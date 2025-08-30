@@ -1,5 +1,5 @@
 import React from 'react';
-import './Awareness.css'; // We'll create this CSS file next
+import './Awareness.css'; 
 
 const Awareness = () => {
   return (

@@ -14,9 +14,11 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 cache = {}
 CACHE_TTL = 300 
 
+
 @app.route("/get-coordinates", methods=["POST"])
 def get_coordinates():
     data = request.get_json()
+    p_id=data.get("_id")
     city = data.get("city")
     
     if not city:
@@ -25,8 +27,8 @@ def get_coordinates():
     city = city.lower().strip()  # normalize city name
 
     # ✅ Check cache
-    if city in cache:
-        cached_data = cache[city]
+    if (p_id,city) in cache:
+        cached_data = cache[(p_id,city)]
         if time.time() - cached_data["timestamp"] < CACHE_TTL:
             # Return cached result if less than 5 minutes old
             return jsonify({
@@ -45,7 +47,7 @@ def get_coordinates():
     )
 
     # Extract AI reply
-    ai_reply = response.choices[0].message["content"]
+    ai_reply = response.choices[0].message.content
     ai_reply = re.sub(r"```json|```", "", ai_reply).strip()
 
     # Example AI reply: {"latitude": 13.0827, "longitude": 80.2707}
@@ -58,7 +60,7 @@ def get_coordinates():
         return jsonify({"error": "Failed to parse AI response", "details": str(e)}), 500
     
     # ✅ Save in cache
-    cache[city] = {
+    cache[(p_id,city)] = {
         "coords": coords_list,
         "timestamp": time.time()
     }
@@ -67,3 +69,7 @@ def get_coordinates():
         "coordinates": coords_list,
         "cached": False
     })
+    
+    @app.route("/jsonfile")
+    def jsonfile():
+        return [currentep.json,generalalert.json,majoralert_20250830_153041.json,wsummary.json]

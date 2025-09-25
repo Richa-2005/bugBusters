@@ -1,0 +1,108 @@
+{
+    "gemini_analysis": {
+        "error": "Gemini response error: 404 Client Error: Not Found for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBBbE_qDcsj27it65yrNhEKnsulTzeoDy8"
+    },
+    "historical_context": {
+        "derived_rules": [
+            {
+                "bounds": {
+                    "max_lat": 50,
+                    "max_lon": 160,
+                    "min_lat": 30,
+                    "min_lon": 140
+                },
+                "max_depth": 2.0,
+                "min_magnitude": 6.3,
+                "region_name": "Japan-Kuril Trench"
+            },
+            {
+                "bounds": {
+                    "max_lat": 6,
+                    "max_lon": 125,
+                    "min_lat": -10,
+                    "min_lon": 95
+                },
+                "max_depth": 500.0,
+                "min_magnitude": 6.0,
+                "region_name": "Sunda Arc (Indonesia)"
+            },
+            {
+                "bounds": {
+                    "max_lat": -18,
+                    "max_lon": -70,
+                    "min_lat": -45,
+                    "min_lon": -80
+                },
+                "max_depth": 9.0,
+                "min_magnitude": 5.9,
+                "region_name": "Chile-Peru Trench"
+            },
+            {
+                "bounds": {
+                    "max_lat": 50,
+                    "max_lon": -122,
+                    "min_lat": 40,
+                    "min_lon": -130
+                },
+                "max_depth": 0.1,
+                "min_magnitude": 6.0,
+                "region_name": "Cascadia Subduction Zone"
+            }
+        ],
+        "source_file": "historical_tsunamis.csv"
+    },
+    "initial_assessment": {
+        "reason": "No match with high-risk regions.",
+        "risk_level": "LOW"
+    },
+    "monitoring_location": {
+        "lat": 38.322,
+        "lon": 142.369,
+        "name": "Offshore Honshu, Japan",
+        "radius_km": 500
+    },
+    "real_time_event": {
+        "data": {
+            "geometry": {
+                "coordinates": [
+                    141.8959,
+                    39.4671,
+                    65.465
+                ],
+                "type": "Point"
+            },
+            "id": "us7000qsj6",
+            "properties": {
+                "alert": null,
+                "cdi": null,
+                "code": "7000qsj6",
+                "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us7000qsj6&format=geojson",
+                "dmin": 1.467,
+                "felt": null,
+                "gap": 137,
+                "ids": ",us7000qsj6,",
+                "mag": 4.8,
+                "magType": "mb",
+                "mmi": null,
+                "net": "us",
+                "nst": 59,
+                "place": "4 km W of Yamada, Japan",
+                "rms": 0.65,
+                "sig": 354,
+                "sources": ",us,",
+                "status": "reviewed",
+                "time": 1756545996591,
+                "title": "M 4.8 - 4 km W of Yamada, Japan",
+                "tsunami": 0,
+                "type": "earthquake",
+                "types": ",origin,phase-data,",
+                "tz": null,
+                "updated": 1756547033040,
+                "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000qsj6"
+            },
+            "type": "Feature"
+        },
+        "status": "Alert!!! Earthquake Detected"
+    },
+    "report_generated_utc": "2025-08-31T03:15:20.266547"
+}

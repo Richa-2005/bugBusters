@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 from app import get_coordinates
-
+def hello(assistant_output):
+    return assistant_output
 def generate_weather_advice(current_weather, daily_forecast):
     """
     Generates human-readable advice based on weather data.
@@ -94,9 +95,9 @@ def create_ai_assistant_json(lat, lon, api_key, filename="generalalert.json"):
         }
 
         # Save the structured output to a JSON file
-        with open(filename, 'w') as json_file:
-            json.dump(assistant_output, json_file, indent=4)
-        
+        # with open(filename, 'w') as json_file:
+        #     json.dump(assistant_output, json_file, indent=4)
+        hello()
         return f"AI Weather Assistant report successfully saved to {filename}"
 
     except requests.exceptions.HTTPError as http_err:

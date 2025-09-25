@@ -1,29 +1,28 @@
-import pandas as pd
+import os
 import json
 import requests
+import pandas as pd
 from datetime import datetime
-from app import getmaxmin_coordinates
 from dotenv import load_dotenv
-import os
 import google.generativeai as genai
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv(dotenv_path='.env')
 
-# CONFIGURATION
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise ValueError("CRITICAL ERROR: GEMINI_API_KEY was not found. Check your api.env file.")
-genai.configure(api_key=api_key)
+# Configure Gemini API
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError("CRITICAL ERROR: GEMINI_API_KEY was not found. Check your .env file.")
+genai.configure(api_key=GEMINI_API_KEY)
 
-
-# 2. Define data sources and outputs
+# File paths
 INPUT_CSV_PATH = 'historical_tsunamis.csv'
 OUTPUT_JSON_REPORT_PATH = 'comprehensive_tsunami_report.json'
-# The base URL is now more flexible to allow for location-specific queries
-USGS_API_URL_BASE = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
 
-# 3. Define the geographical bounding boxes for high-risk zones
+# USGS API for real-time earthquakes
+USGS_API_URL_BASE = "https://earthquake.usgs.gov/fdsnws/event/1/query"
+
+# High-risk regions
 REGIONS = {
     "Japan-Kuril Trench": [140, 30, 160, 50],
     "Sunda Arc (Indonesia)": [95, -10, 125, 6],
@@ -32,15 +31,32 @@ REGIONS = {
 }
 
 def analyze_historical_data(file_path):
-    """Analyzes the CSV to generate historical risk rules."""
+    """Analyze historical tsunami events to create region-specific risk rules."""
     try:
         df = pd.read_csv(file_path)
     except FileNotFoundError:
+        print(f"Error: '{file_path}' not found.")
         return None
+
+    df.columns = [col.strip().lower() for col in df.columns]
+    column_mapping = {
+        'latitude': 'latitude',
+        'longitude': 'longitude',
+        'earthquake magnitude': 'magnitude',
+        'maximum water height (m)': 'depth',
+        'tsunami event validity': 'tsunami'
+    }
+    df = df.rename(columns=column_mapping)
+
+    required_columns = {'tsunami', 'latitude', 'longitude', 'magnitude', 'depth'}
+    if not required_columns.issubset(df.columns):
+        raise ValueError(f"❌ CSV is missing required columns. Required: {required_columns}")
+
+    df['tsunami'] = pd.to_numeric(df['tsunami'], errors='coerce').fillna(0).astype(int)
     tsunami_events = df[df['tsunami'] == 1].copy()
+
     risk_rules = []
-    for region_name, bounds in REGIONS.items():
-        min_lon, min_lat, max_lon, max_lat = bounds
+    for region_name, (min_lon, min_lat, max_lon, max_lat) in REGIONS.items():
         region_df = tsunami_events[
             (tsunami_events['longitude'] >= min_lon) & (tsunami_events['longitude'] <= max_lon) &
             (tsunami_events['latitude'] >= min_lat) & (tsunami_events['latitude'] <= max_lat)
@@ -55,112 +71,106 @@ def analyze_historical_data(file_path):
             risk_rules.append(rule)
     return risk_rules
 
-def fetch_earthquake_for_location(target_coords):
-    """Fetches the most recent significant earthquake near the target coordinates."""
-    # Build the query URL with location parameters
+def fetch_earthquake_for_location(coords):
+    """Fetch recent earthquake data near given coordinates."""
     params = {
-        'latitude': target_coords['lat'],
-        'longitude': target_coords['lon'],
-        'maxradiuskm': target_coords['radius_km']
-    }
+        'format': 'geojson',
+        'latitude': coords['lat'],
+        'longitude': coords['lon'],
+        'maxradiuskm': coords['radius_km'],
+        'minmagnitude': 4.5,
+        'orderby': 'time',
+        'limit': 1
+}
+
     try:
         response = requests.get(USGS_API_URL_BASE, params=params, timeout=15)
         response.raise_for_status()
         features = response.json().get('features', [])
-        if features:
-            # The API returns them sorted by time, so the first is the most recent
-            return features[0]
+        return features[0] if features else None
     except requests.exceptions.RequestException as e:
-        print(f"Error fetching USGS data for the specified location: {e}")
-    return None
+        print(f"Error fetching USGS data: {e}")
+        return None
 
-def perform_initial_assessment(earthquake, rules):
-    """Performs a preliminary risk assessment based on historical rules."""
-    props = earthquake['properties']
-    geom = earthquake['geometry']['coordinates']
-    lon, lat, depth = geom[0], geom[1], geom[2]
-    mag = props['mag']
-    
+def perform_initial_assessment(event, rules):
+    """Assess tsunami risk using historical rules."""
+    lon, lat, depth = event['geometry']['coordinates']
+    mag = event['properties']['mag']
+
     for rule in rules:
-        bounds = rule['bounds']
-        if (bounds['min_lon'] <= lon <= bounds['max_lon'] and
-            bounds['min_lat'] <= lat <= bounds['max_lat']):
+        b = rule['bounds']
+        if b['min_lon'] <= lon <= b['max_lon'] and b['min_lat'] <= lat <= b['max_lat']:
             if mag >= rule['min_magnitude'] and depth <= rule['max_depth']:
                 return {
                     "risk_level": "HIGH",
-                    "reason": f"Event matches the high-risk profile for the '{rule['region_name']}'."
+                    "reason": f"Matches high-risk profile for {rule['region_name']}."
                 }
     return {
         "risk_level": "LOW",
-        "reason": "Event does not match any known high-risk historical profiles."
+        "reason": "No match with high-risk regions."
     }
 
-def get_gemini_analysis(earthquake_data, assessment, historical_rules):
-    """Generates a prompt and gets analysis from the Gemini API."""
-    if not api_key or api_key == "YOUR_GEMINI_API_KEY":
-        return {"error": "Gemini API key not configured."}
-
-    # Construct the detailed prompt
+def get_gemini_analysis(earthquake, assessment, rules):
+    """Get expert-like JSON analysis from Gemini."""
     prompt = f"""
-    Act as a senior seismologist and disaster management expert.
-    
-    **Historical Context:**
-    My system has analyzed a historical earthquake dataset and generated the following risk profiles for tsunami generation in specific regions:
-    {json.dumps(historical_rules, indent=2)}
+    You are a senior seismologist and disaster management expert.
 
-    **Real-Time Seismic Event:**
-    A new earthquake has just been detected with the following details:
-    - Location: {earthquake_data['properties']['place']}
-    - Magnitude: {earthquake_data['properties']['mag']}
-    - Depth: {earthquake_data['geometry']['coordinates'][2]} km
-    - Time: {datetime.fromtimestamp(earthquake_data['properties']['time'] / 1000)} UTC
+    **Historical Risk Rules:**
+    {json.dumps(rules, indent=2)}
 
-    **Initial Computer Assessment:**
-    My rule-based system made an initial assessment: {assessment['risk_level']} - {assessment['reason']}
+    **Recent Earthquake:**
+    - Location: {earthquake['properties']['place']}
+    - Magnitude: {earthquake['properties']['mag']}
+    - Depth: {earthquake['geometry']['coordinates'][2]} km
+    - Time: {datetime.fromtimestamp(earthquake['properties']['time'] / 1000)} UTC
+
+    **Initial System Assessment:**
+    {assessment['risk_level']} - {assessment['reason']}
 
     **Your Task:**
-    Based on all the information above (historical context, real-time data, and the initial assessment), provide a concise analysis in JSON format. The JSON object must have three keys: "summary", "alerts", and "suggestions".
+    Based on all the information above, provide a concise analysis in JSON format. The JSON object must have three keys: "summary", "alerts", and "suggestions".
     - "summary": A brief, one-sentence overview of the situation.
-    - "alerts": A list of 2-3 critical, immediate warning messages for the public and authorities. Mention the concept of deep-ocean buoy activation (like DART) if the event is a significant undersea earthquake.
+    - "alerts": A list of 2-3 critical, immediate warning messages. Mention deep-ocean buoy activation (like DART).
     - "suggestions": A list of 2-3 actionable recommendations for safety and monitoring.
     
     Provide only the raw JSON object as your response.
+    
     """
-
+    
+     # --- THIS LINE IS CORRECTED ---
     api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+    # --- END OF CORRECTION ---
+
     headers = {'Content-Type': 'application/json'}
     payload = {"contents": [{"parts": [{"text": prompt}]}]}
 
     try:
         response = requests.post(api_url, headers=headers, data=json.dumps(payload), timeout=30)
         response.raise_for_status()
-        
         full_text = response.json()['candidates'][0]['content']['parts'][0]['text']
         json_text = full_text.strip().replace("```json", "").replace("```", "").strip()
         return json.loads(json_text)
-    except requests.exceptions.RequestException as e:
-        return {"error": f"API request failed: {e}"}
-    except (KeyError, json.JSONDecodeError) as e:
-        return {"error": f"Failed to parse Gemini response: {e}", "raw_response": full_text}
+    except Exception as e:
+        return {"error": f"Gemini response error: {e}"}
 
 def main():
-    """Main function to generate the comprehensive report."""
-    print("--- Starting Comprehensive Tsunami Report Generation ---")
-    
-    # 1. Get the target coordinates from the external file
-    target_location = get_coordinates()
-    print(f"Monitoring location set to: {target_location['name']} (Lat: {target_location['lat']}, Lon: {target_location['lon']})")
+    print("--- Starting Tsunami Report Generation ---")
 
-    # 2. Analyze historical data
+    target_location = {
+        "name": "Offshore Honshu, Japan",
+        "lat": 38.322,
+        "lon": 142.369,
+        "radius_km": 500
+    }
+    print(f"Monitoring: {target_location['name']}")
+
     risk_rules = analyze_historical_data(INPUT_CSV_PATH)
     if not risk_rules:
-        print(f"Could not analyze historical data from '{INPUT_CSV_PATH}'. Exiting.")
+        print("No historical rules generated. Exiting.")
         return
 
-    # 3. Fetch the latest earthquake for the specified location
-    location_earthquake = fetch_earthquake_for_location(target_location)
-    
-    # 4. Build the final report
+    earthquake = fetch_earthquake_for_location(target_location)
+
     report = {
         "report_generated_utc": datetime.utcnow().isoformat(),
         "monitoring_location": target_location,
@@ -170,33 +180,24 @@ def main():
         "gemini_analysis": {}
     }
 
-    if location_earthquake:
-        print(f"Found a recent event near target: M{location_earthquake['properties']['mag']} at {location_earthquake['properties']['place']}")
+    if earthquake:
+        print(f"Recent Earthquake: M{earthquake['properties']['mag']} at {earthquake['properties']['place']}")
         report["real_time_event"] = {
-            "status": "Earthquake Detected Near Target Location",
-            "data": location_earthquake
+            "status": "Alert!!! Earthquake Detected",
+            "data": earthquake
         }
-        
-        # 5. Perform initial assessment
-        assessment = perform_initial_assessment(location_earthquake, risk_rules)
+
+        assessment = perform_initial_assessment(earthquake, risk_rules)
         report["initial_assessment"] = assessment
-        print(f"Initial Assessment: {assessment['risk_level']} - {assessment['reason']}")
+        print(f"Assessment: {assessment['risk_level']} - {assessment['reason']}")
 
-        # 6. Get Gemini's expert analysis
-        print("Querying Gemini API for expert analysis...")
-        gemini_output = get_gemini_analysis(location_earthquake, assessment, risk_rules)
-        report["gemini_analysis"] = gemini_output
+        gemini_result = get_gemini_analysis(earthquake, assessment, risk_rules)
+        report["gemini_analysis"] = gemini_result
     else:
-        print(f"No significant earthquakes detected within {target_location['radius_km']}km of the target in the last 24 hours.")
-        report["real_time_event"]["status"] = "No significant earthquake detected near target."
+        print("No recent significant earthquake detected.")
+        report["real_time_event"] = {"status": "No significant event nearby."}
 
-    # 7. Save the final JSON report
     with open(OUTPUT_JSON_REPORT_PATH, 'w') as f:
-        json.dump(report, f, indent=4)
-    
-    print(f"\n--- Report generation complete. Output saved to '{OUTPUT_JSON_REPORT_PATH}' ---")
-
+        json.dump(report, f, indent=4, sort_keys=True)
 if __name__ == "__main__":
     main()
-
-

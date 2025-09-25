@@ -77,7 +77,7 @@ def getmaxmin_coordinates():
     model="gpt-4o-mini",
     messages=[
         {"role": "system", "content": "You are a geolocation assistant. Return only JSON with latitude and longitude of the city, rounded to 2 decimal places."},
-        {"role": "user", "content": f"Give me latitude and longitude of {city} in JSON format with keys latitude and longitude."}
+        {"role": "user", "content": f"Give me latitude and longitude of  in JSON format with keys latitude and longitude."}
         ]
     )
     ai_reply = response.choices[0].message.content

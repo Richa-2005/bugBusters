@@ -1,4 +1,4 @@
-# geo_module.py
+# geo_module.py->to get cordinates
 import re
 import json
 from openai import OpenAI

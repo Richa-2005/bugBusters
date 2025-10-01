@@ -1,0 +1,22 @@
+acha sunn make sure tere .gitignore esa ho before pushing: 
+# Dependencies
+/node_modules
+
+# Environment variables - ignore .env files everywhere
+.env
+
+# Python artifacts
+/_pycache_/
+*.pyc
+
+# Generated data, logs, and archives
+*.json
+*.csv
+*.zip
+*.log
+
+# Operating System & IDE specific
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
